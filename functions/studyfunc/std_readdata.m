@@ -82,7 +82,7 @@ end
 STUDY = pop_erpparams(STUDY, 'default');
 STUDY = pop_specparams(STUDY, 'default');
 STUDY = pop_erspparams(STUDY, 'default');
-[opt moreopts] = finputcheck( varargin, { ...
+[opt, moreopts] = finputcheck( varargin, { ...
     'design'        'integer' []             STUDY.currentdesign;
     'channels'      'cell'    []             {};
     'clusters'      'integer' []             [];
@@ -131,8 +131,8 @@ end
 % options
 % -------
 opts = {};
-if ~isempty(opt.timerange), opts = { 'timelimits', opt.timerange }; end
-if ~isempty(opt.freqrange), opts = { 'freqlimits', opt.freqrange }; end
+if ~isempty(opt.timerange), opts = { opts{:} 'timelimits', opt.timerange }; end
+if ~isempty(opt.freqrange), opts = { opts{:} 'freqlimits', opt.freqrange }; end
 opts = { opts{:} 'singletrials' opt.singletrials };
 fprintf('Reading subjects'' data or looking up measure values in EEGLAB cache\n');
 
@@ -308,9 +308,9 @@ if ~isempty(opt.clusters)
                         dataTmp2{end+1} = cell(size(dataTmp{iDat1}));
                         % check dimensions of components
                         if ~isempty(dataTmp{iDat1}{iDat2})
-                            if strcmpi(opt.singletrials, 'on') && strcmpi(tmpDataType, 'timef'),    dataTmp2{end}{iDat2} = dataTmp{iDat1}{iDat2}(:,:,:,iComps);
-                            elseif strcmpi(opt.singletrials, 'on') || strcmpi(tmpDataType, 'timef') dataTmp2{end}{iDat2} = dataTmp{iDat1}{iDat2}(:,:,iComps);
-                            else                                                                    dataTmp2{end}{iDat2} = dataTmp{iDat1}{iDat2}(:,iComps);
+                            if strcmpi(opt.singletrials, 'on') && (strcmpi(tmpDataType, 'timef') || strcmpi(tmpDataType, 'erpim')),    dataTmp2{end}{iDat2} = dataTmp{iDat1}{iDat2}(:,:,:,iComps);
+                            elseif strcmpi(opt.singletrials, 'on') || (strcmpi(tmpDataType, 'timef') || strcmpi(tmpDataType, 'erpim')) dataTmp2{end}{iDat2} = dataTmp{iDat1}{iDat2}(:,:,iComps);
+                            else                                                                                                       dataTmp2{end}{iDat2} = dataTmp{iDat1}{iDat2}(:,iComps);
                             end
                         end
                     end
